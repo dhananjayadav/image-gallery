@@ -1,3 +1,4 @@
+const { sendEmail } = require("../Utils/email");
 const User = require("../models/userModel");
 
 const getUserByEmail = async(req, res)=> {
@@ -24,6 +25,12 @@ const createUser = async(req, res)=> {
     try {
         const { name, email, password } = req.body;
         const user = await User.create({ name, email, password });
+        await sendEmail({
+            sendTo:email,
+            subject: 'New Account - WebMaster',
+            html: `<b>Hi ${name}</b>
+            You have successfully created your account in webmaster`
+        })
         res.status(200).json({ user });
     }catch(err){
         res.status(400).json({ err });
